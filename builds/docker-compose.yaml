@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  educareuser:
+    container_name: educare-user-db
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      - SA_PASSWORD=a1b@c#e4
+      - ACCEPT_EULA=Y
+    ports:
+      - 6433:1433
+    networks:
+      - educare
+
+  educareuserapi:
+    container_name: "educare-user-api"
+    build:
+      context: ../src/services
+      dockerfile: EduCare.User/EduCare.User.Api/Dockerfile
+    networks:
+      - educare
+    ports:
+      - 6450:80
+networks:
+  educare:
