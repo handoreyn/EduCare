@@ -7,8 +7,10 @@ public static class DatabaseContextExtension
 {
     public static void AddEduCareUserDatabaseContext(this IServiceCollection services, IConfiguration configuration)
     {
+        var connStr = configuration["EduCareUserDatabaseConnectionString"];
+        Console.WriteLine(connStr);
         services.AddDbContext<EduCareDatabaseContext>(options => options
-            .UseSqlServer(configuration["EduCareUserDatabaseConnectionString"], b =>
+            .UseSqlServer(connStr, b =>
             b.MigrationsAssembly("EduCare.User.Api")
             ));
     }

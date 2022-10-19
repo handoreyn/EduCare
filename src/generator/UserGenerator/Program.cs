@@ -15,24 +15,26 @@ var generator = faker.RuleFor(l => l.Id, f => f.IndexFaker)
     .RuleFor(l => l.UpdateDate, f => f.Date.Past(1))
     .RuleFor(l => l.Status, f => f.Random.Enum<StatusEnumType>());
 
-var users = generator.Generate(1_000_000);
+var users = generator.Generate(3_000_000);
 
 var userCsvData = new StringBuilder();
 var fileChunks = users.Count / 100_000;
-var lines = new List<string>();
-// userCsvData.AppendLine($"1,fatihgencaslan@yahoo.com,g9f11e12,Fatih Gençaslan,{DateTime.Now},{DateTime.Now},{DateTime.Now},1");
-lines.Add($"1,fatihgencaslan@yahoo.com,g9f11e12,Fatih Gençaslan,{DateTime.Now},{DateTime.Now},{DateTime.Now},1");
+var lines = new Dictionary<string, string>();
+
+var count = 0;
 for (var i = 0; i < users.Count; ++i)
 {
     var u = users[i];
-    lines.Add($"{i + 1},{u.Email},{u.Password},{u.FullName},{u.BirthDate},{u.CreateDate},{u.UpdateDate},2");
-    //     userCsvData.AppendLine($"{users.IndexOf(u) + 2},{u.Email},{u.Password},{u.FullName},{u.BirthDate},{u.CreateDate},{u.UpdateDate},2");
-    Console.WriteLine(i);
+    if (lines.TryAdd(u.Email, $",{u.Email},{u.Password},{u.FullName},{u.BirthDate.ToString("MM/dd/yyyy")},{u.CreateDate.ToString("MM/dd/yyyy")},{u.UpdateDate.ToString("MM/dd/yyyy")},2"))
+    {
+        ++count;
+    }
+    if (count % 1_000_000 == 0)
+    {
+        count = 0;
+        await File.AppendAllLinesAsync($"{Guid.NewGuid()}.csv", lines.Values);
+        lines = new Dictionary<string, string>();
+    }
 }
-await File.AppendAllLinesAsync("users.csv", lines);
-// foreach (var u in users)
-// {
-//     userCsvData.AppendLine($"{users.IndexOf(u) + 2},{u.Email},{u.Password},{u.FullName},{u.BirthDate},{u.CreateDate},{u.UpdateDate},2");
-// }
 
-// await File.WriteAllTextAsync($"users{DateTime.Now.ToString("yyyyMMdd")}.csv", userCsvData.ToString());
+await File.AppendAllLinesAsync($"{Guid.NewGuid()}.csv", lines.Values);

@@ -17,10 +17,13 @@ public class UserUploadTask
 
     public async Task Process(CancellationToken token)
     {
+        var scope = _serviceFactory.CreateScope();
+        var logger = scope.ServiceProvider.GetService<ILogger<UserUploadTask>>();
+        logger.LogInformation($"User upload task has been started at: {DateTime.UtcNow}");
+
         var users = new Dictionary<string, User.Core.Entities.User>();
         using (var textParser = new TextFieldParser(_filePath))
         {
-
             textParser.TextFieldType = FieldType.Delimited;
             textParser.SetDelimiters(",");
 
@@ -45,9 +48,9 @@ public class UserUploadTask
             }
         }
 
-        var scope = _serviceFactory.CreateScope();
         var repository = scope.ServiceProvider.GetService<IUserRepository>();
         await repository.BulkInsertUsers(users.Values);
         var result = await repository.SaveChangesAsync();
+        logger.LogInformation($"User upload task has been completed at: {DateTime.UtcNow}");
     }
 }

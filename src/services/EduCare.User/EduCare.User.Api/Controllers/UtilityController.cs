@@ -16,7 +16,7 @@ public class UtilityController : ControllerBase
     }
 
     [HttpPost("upload-user-file")]
-    [RequestSizeLimit(200_000_000)]
+    [RequestSizeLimit(300_000_000)]
     public async Task<IActionResult> UserUpload(IFormFile file, [FromServices] IUserUploadTaskQueue userUploadServiceQueue)
     {
 

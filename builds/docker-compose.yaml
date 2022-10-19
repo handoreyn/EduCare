@@ -5,7 +5,7 @@ services:
     container_name: educare-user-db
     image: mcr.microsoft.com/azure-sql-edge
     environment:
-      - SA_PASSWORD=a1b@c#e4
+      - SA_PASSWORD=Q9f!!e!2
       - ACCEPT_EULA=Y
     ports:
       - 6433:1433
@@ -21,5 +21,6 @@ services:
       - educare
     ports:
       - 6450:80
+
 networks:
   educare:
