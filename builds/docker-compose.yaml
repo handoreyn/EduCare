@@ -11,6 +11,10 @@ services:
       - 6433:1433
     networks:
       - educare
+    volumes:
+      - ./volumes/mssql:/var/opt/mssql-extensibility/data
+      - ./volumes/mssql:/var/opt/mssql-extensibility/log
+      - ./volumes/mssql:/var/opt/mssql-extensibility
 
   educareuserapi:
     container_name: "educare-user-api"
