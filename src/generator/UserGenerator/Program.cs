@@ -20,14 +20,17 @@ var users = generator.Generate(3_000_000);
 var userCsvData = new StringBuilder();
 var fileChunks = users.Count / 100_000;
 var lines = new Dictionary<string, string>();
-
+var emails = new HashSet<string>();
 var count = 0;
 for (var i = 0; i < users.Count; ++i)
 {
     var u = users[i];
+    if (emails.Contains(u.Email)) continue;
+
     if (lines.TryAdd(u.Email, $",{u.Email},{u.Password},{u.FullName},{u.BirthDate.ToString("MM/dd/yyyy")},{u.CreateDate.ToString("MM/dd/yyyy")},{u.UpdateDate.ToString("MM/dd/yyyy")},2"))
     {
         ++count;
+        emails.Add(u.Email);
     }
     if (count % 1_000_000 == 0)
     {
